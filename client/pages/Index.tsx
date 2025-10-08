@@ -1,61 +1,28 @@
-import { DemoResponse } from "@shared/api";
-import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import FallingSuits from "@/components/FallingSuits";
 
 export default function Index() {
-  const [exampleFromServer, setExampleFromServer] = useState("");
-  // Fetch users on component mount
-  useEffect(() => {
-    fetchDemo();
-  }, []);
-
-  // Example of how to fetch data from the server (if needed)
-  const fetchDemo = async () => {
-    try {
-      const response = await fetch("/api/demo");
-      const data = (await response.json()) as DemoResponse;
-      setExampleFromServer(data.message);
-    } catch (error) {
-      console.error("Error fetching hello:", error);
-    }
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
-      <div className="text-center">
-        {/* TODO: FUSION_GENERATION_APP_PLACEHOLDER replace everything here with the actual app! */}
-        <h1 className="text-2xl font-semibold text-slate-800 flex items-center justify-center gap-3">
-          <svg
-            className="animate-spin h-8 w-8 text-slate-400"
-            viewBox="0 0 50 50"
-          >
-            <circle
-              className="opacity-30"
-              cx="25"
-              cy="25"
-              r="20"
-              stroke="currentColor"
-              strokeWidth="5"
-              fill="none"
-            />
-            <circle
-              className="text-slate-600"
-              cx="25"
-              cy="25"
-              r="20"
-              stroke="currentColor"
-              strokeWidth="5"
-              fill="none"
-              strokeDasharray="100"
-              strokeDashoffset="75"
-            />
-          </svg>
-          Generating your app...
-        </h1>
-        <p className="mt-4 text-slate-600 max-w-md">
-          Watch the chat on the left for updates that might need your attention
-          to finish generating
-        </p>
-        <p className="mt-4 hidden max-w-md">{exampleFromServer}</p>
+    <div className="relative min-h-screen w-full bg-black text-white">
+      {/* Falling suits background */}
+      <FallingSuits />
+
+      {/* Vignette & subtle gradient overlay for depth */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.06),transparent_60%)]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-black/70 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black/70 to-transparent" />
+
+      {/* Centered Call-to-Action */}
+      <div className="relative z-10 flex min-h-screen items-center justify-center">
+        <Button
+          className="group rounded-full bg-white px-8 py-3 text-base font-semibold tracking-wide text-black shadow-[0_0_0_2px_rgba(255,255,255,0.2)_inset,0_10px_30px_rgba(255,255,255,0.08)] transition-transform duration-150 hover:scale-[1.02] active:scale-[0.98] focus-visible:ring-white/60"
+          size="lg"
+        >
+          <span className="relative">
+            commence
+            <span className="absolute -inset-x-1 -bottom-1 block h-px w-[120%] translate-x-1/2 translate-y-1/2 bg-gradient-to-r from-transparent via-white/70 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+          </span>
+        </Button>
       </div>
     </div>
   );
