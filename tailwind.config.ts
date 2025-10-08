@@ -73,8 +73,8 @@ export default {
           to: { height: "0" },
         },
         fall: {
-          "0%": { transform: "translateY(-10%)" },
-          "100%": { transform: "translateY(110%)" },
+          "0%": { transform: "translate3d(0,-10vh,0)" },
+          "100%": { transform: "translate3d(0,110vh,0)" },
         },
         sway: {
           "0%": { transform: "translateX(-20px)" },
