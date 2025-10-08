@@ -91,7 +91,7 @@ export default {
         "accordion-up": "accordion-up 0.2s ease-out",
         fall: "fall linear infinite",
         sway: "sway 6s ease-in-out infinite",
-        "btn-in": "btn-in 1200ms cubic-bezier(.2,.8,.2,1) both",
+        "btn-in": "btn-in 1600ms cubic-bezier(.2,.8,.2,1) both",
       },
     },
   },
