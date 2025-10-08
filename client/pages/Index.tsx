@@ -15,7 +15,12 @@ export default function Index() {
 
   return (
     <div className="relative min-h-screen w-full bg-black text-white">
-      <div className={"relative z-10 min-h-screen transition-all duration-300 " + (open ? "blur-[6px]" : "")}>
+      <div
+        className={
+          "relative z-10 min-h-screen transition-all duration-300 " +
+          (open ? "blur-[6px]" : "")
+        }
+      >
         {/* Vignette & subtle gradient overlay for depth (behind suits) */}
         <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.06),transparent_60%)]" />
         <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-48 bg-gradient-to-b from-black/70 to-transparent" />
@@ -44,10 +49,18 @@ export default function Index() {
                 Select a wallet to commence into the app
               </DialogDescription>
               <div className="mt-2 grid gap-2">
-                <button className="flex items-center gap-3 w-full rounded-md border border-white/15 bg-white/5 px-4 py-3 text-left font-medium hover:bg-white/10 transition-colors"><Wallet className="h-5 w-5" /> Ready X wallet</button>
-                <button className="flex items-center gap-3 w-full rounded-md border border-white/15 bg-white/5 px-4 py-3 text-left font-medium hover:bg-white/10 transition-colors"><Shield className="h-5 w-5" /> Braavos</button>
-                <button className="flex items-center gap-3 w-full rounded-md border border-white/15 bg-white/5 px-4 py-3 text-left font-medium hover:bg-white/10 transition-colors"><Gamepad2 className="h-5 w-5" /> Cartridge</button>
-                <button className="flex items-center gap-3 w-full rounded-md border border-white/15 bg-white/5 px-4 py-3 text-left font-medium hover:bg-white/10 transition-colors"><Compass className="h-5 w-5" /> Wandering</button>
+                <button className="flex items-center gap-3 w-full rounded-md border border-white/15 bg-white/5 px-4 py-3 text-left font-medium hover:bg-white/10 transition-colors">
+                  <Wallet className="h-5 w-5" /> Ready X wallet
+                </button>
+                <button className="flex items-center gap-3 w-full rounded-md border border-white/15 bg-white/5 px-4 py-3 text-left font-medium hover:bg-white/10 transition-colors">
+                  <Shield className="h-5 w-5" /> Braavos
+                </button>
+                <button className="flex items-center gap-3 w-full rounded-md border border-white/15 bg-white/5 px-4 py-3 text-left font-medium hover:bg-white/10 transition-colors">
+                  <Gamepad2 className="h-5 w-5" /> Cartridge
+                </button>
+                <button className="flex items-center gap-3 w-full rounded-md border border-white/15 bg-white/5 px-4 py-3 text-left font-medium hover:bg-white/10 transition-colors">
+                  <Compass className="h-5 w-5" /> Wandering
+                </button>
               </div>
             </DialogContent>
           </Dialog>

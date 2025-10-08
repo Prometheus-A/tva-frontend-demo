@@ -97,7 +97,8 @@ export default function FallingSuits({ speed = 1 }: { speed?: number }) {
     // spatial hash for collisions
     const cell = 32;
     const grid = new Map<string, number[]>();
-    const keyOf = (x: number, y: number) => `${Math.floor(x / cell)}_${Math.floor(y / cell)}`;
+    const keyOf = (x: number, y: number) =>
+      `${Math.floor(x / cell)}_${Math.floor(y / cell)}`;
 
     const t = performance.now() / 1000;
 
@@ -179,7 +180,12 @@ export default function FallingSuits({ speed = 1 }: { speed?: number }) {
   const width = typeof window !== "undefined" ? window.innerWidth : 1200;
   const height = typeof window !== "undefined" ? window.innerHeight : 800;
 
-  const IconOf: Record<SuitType, any> = { heart: Heart, diamond: Diamond, club: Club, spade: Spade };
+  const IconOf: Record<SuitType, any> = {
+    heart: Heart,
+    diamond: Diamond,
+    club: Club,
+    spade: Spade,
+  };
 
   // render
   return (
