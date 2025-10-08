@@ -16,13 +16,10 @@ export default function Index() {
       <div className="relative z-20 flex min-h-screen items-center justify-center">
         <Button
           variant="ghost"
-          className="group rounded-full border-2 border-white/0 bg-white px-8 py-3 text-base font-semibold tracking-wide text-black transition-colors transition-shadow transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] focus-visible:ring-white/60 hover:bg-black hover:text-white hover:border-white hover:shadow-[0_0_0_2px_rgba(255,255,255,1),0_0_24px_rgba(255,255,255,0.35)]"
+          className="rounded-full border-2 border-transparent bg-white px-8 py-3 text-base font-semibold tracking-wide text-black transition-colors transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] focus-visible:ring-white/60 hover:bg-black hover:text-white hover:border-white hover:shadow-[0_0_0_2px_#fff,0_0_24px_rgba(255,255,255,0.35)]"
           size="lg"
         >
-          <span className="relative">
-            commence
-            <span className="absolute -inset-x-1 -bottom-1 block h-px w-[120%] translate-x-1/2 translate-y-1/2 bg-gradient-to-r from-transparent via-white/70 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
-          </span>
+          commence
         </Button>
       </div>
     </div>
