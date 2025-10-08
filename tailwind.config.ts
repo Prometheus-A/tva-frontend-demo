@@ -83,7 +83,6 @@ export default {
         },
         "btn-in": {
           "0%": { transform: "scale(0)", opacity: "0" },
-          "60%": { transform: "scale(1.06)", opacity: "1" },
           "100%": { transform: "scale(1)", opacity: "1" },
         },
       },
@@ -92,7 +91,7 @@ export default {
         "accordion-up": "accordion-up 0.2s ease-out",
         fall: "fall linear infinite",
         sway: "sway 6s ease-in-out infinite",
-        "btn-in": "btn-in 800ms cubic-bezier(.2,.8,.2,1) both",
+        "btn-in": "btn-in 1200ms cubic-bezier(.2,.8,.2,1) both",
       },
     },
   },
