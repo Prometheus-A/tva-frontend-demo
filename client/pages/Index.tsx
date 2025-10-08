@@ -14,7 +14,7 @@ export default function Index() {
 
   return (
     <div className="relative min-h-screen w-full bg-black text-white">
-      <div className={"relative z-10 min-h-screen transition-all duration-300 " + (open ? "blur-[6px]" : "")}>
+      <div className={"relative z-10 min-h-screen transition-all duration-300 " + (open ? "blur-[12px]" : "")}>
         {/* Vignette & subtle gradient overlay for depth (behind suits) */}
         <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.06),transparent_60%)]" />
         <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-48 bg-gradient-to-b from-black/70 to-transparent" />
