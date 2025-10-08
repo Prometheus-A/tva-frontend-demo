@@ -1,110 +1,205 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Club, Diamond, Heart, Spade } from "lucide-react";
 
 type SuitType = "heart" | "diamond" | "club" | "spade";
 
-interface SuitSpec {
+interface Suit {
   id: number;
-  left: number; // percentage
+  x: number; // px
+  y: number; // px
+  baseX: number; // px
   size: number; // px
-  duration: number; // seconds
-  delay: number; // seconds (can be negative for desync)
-  swayDuration: number; // seconds
+  vy: number; // px/s
+  swayAmp: number; // px
+  swayFreq: number; // Hz
+  swayPhase: number; // rad
   opacity: number; // 0..1
   suit: SuitType;
-  easing: string; // CSS timing function
 }
 
 const SUITS: SuitType[] = ["heart", "diamond", "club", "spade"];
 
-function random(min: number, max: number) {
+function rand(min: number, max: number) {
   return Math.random() * (max - min) + min;
 }
 
 export default function FallingSuits({ speed = 1 }: { speed?: number }) {
   const [mounted, setMounted] = useState(false);
+  const [frame, setFrame] = useState(0);
+  const itemsRef = useRef<Suit[]>([]);
+  const dimsRef = useRef({ w: 1200, h: 800 });
+  const lastRef = useRef<number | null>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const specs = useMemo(() => {
-    const width = typeof window !== "undefined" ? window.innerWidth : 1200;
-    const density = width < 640 ? 0.16 : width < 1024 ? 0.2 : 0.24; // proportional to width
-    const count = Math.max(64, Math.min(260, Math.floor(width * density)));
+  useEffect(() => {
+    if (!mounted) return;
 
-    const clusters = Math.floor(random(3, 7));
-    const centers = Array.from({ length: clusters }).map(() => random(5, 95)); // left% centers
-
-    const pickLeft = () => {
-      if (Math.random() < 0.7) {
-        const c = centers[Math.floor(random(0, centers.length))];
-        return Math.max(0, Math.min(100, c + random(-7, 7)));
-      }
-      return Math.max(0, Math.min(100, random(0, 100)));
+    const updateDims = () => {
+      dimsRef.current = {
+        w: window.innerWidth,
+        h: window.innerHeight,
+      };
     };
+    updateDims();
+    window.addEventListener("resize", updateDims);
 
-    const easings = [
-      "linear",
-      "cubic-bezier(.2,.8,.2,1)", // standard ease-out
-      "cubic-bezier(.3,.7,.4,1)",
-      "cubic-bezier(.1,.9,.2,1)",
-      "cubic-bezier(.4,0,.2,1)", // standard ease
-    ];
+    const { w } = dimsRef.current;
+    const density = w < 640 ? 0.14 : w < 1024 ? 0.18 : 0.22;
+    const count = Math.max(64, Math.min(240, Math.floor(w * density)));
 
-    return Array.from({ length: count }).map((_, i) => {
-      const size = Math.round(random(6, 14));
+    const init: Suit[] = Array.from({ length: count }).map((_, i) => {
+      const size = Math.round(rand(7, 14));
+      const baseX = rand(0, dimsRef.current.w);
       return {
         id: i,
-        left: Math.round(pickLeft()),
+        x: baseX,
+        y: rand(-dimsRef.current.h, 0),
+        baseX,
         size,
-        duration: random(6, 36),
-        delay: -random(0, 42),
-        swayDuration: random(4.5, 12.5),
-        opacity: random(0.25, 0.55),
-        suit: SUITS[Math.floor(random(0, SUITS.length))],
-        easing: easings[Math.floor(random(0, easings.length))],
-      } as SuitSpec;
+        vy: rand(35, 120),
+        swayAmp: rand(6, 22),
+        swayFreq: rand(0.15, 0.45),
+        swayPhase: rand(0, Math.PI * 2),
+        opacity: rand(0.45, 0.85),
+        suit: SUITS[Math.floor(rand(0, SUITS.length))],
+      };
     });
-  }, [mounted]);
+    itemsRef.current = init;
 
-  if (!mounted) return null; // avoid SSR hydration mismatch
+    let raf = 0;
+    const tick = (ts: number) => {
+      const prev = lastRef.current ?? ts;
+      let dt = (ts - prev) / 1000; // seconds
+      lastRef.current = ts;
+      // clamp dt for tab switches
+      if (dt > 0.05) dt = 0.05;
 
+      simulate(dt * speed);
+      // batch re-render ~30fps
+      setFrame((f) => (f + 1) % 2);
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", updateDims);
+    };
+  }, [mounted, speed]);
+
+  const simulate = (dt: number) => {
+    const items = itemsRef.current;
+    const { w, h } = dimsRef.current;
+
+    // spatial hash for collisions
+    const cell = 28;
+    const grid = new Map<string, number[]>();
+    const keyOf = (x: number, y: number) => `${Math.floor(x / cell)}_${Math.floor(y / cell)}`;
+
+    const t = performance.now() / 1000;
+
+    for (let i = 0; i < items.length; i++) {
+      const it = items[i];
+      // sway
+      it.x = it.baseX + Math.sin(t * it.swayFreq + it.swayPhase) * it.swayAmp;
+      // fall
+      it.y += it.vy * dt;
+
+      // wrap
+      if (it.y - it.size > h + 16) {
+        it.y = -rand(0, h * 0.6);
+        it.baseX = rand(0, w);
+        it.vy = rand(35, 120);
+        it.swayAmp = rand(6, 22);
+        it.swayFreq = rand(0.15, 0.45);
+        it.swayPhase = rand(0, Math.PI * 2);
+      }
+
+      const k = keyOf(it.x, it.y);
+      if (!grid.has(k)) grid.set(k, []);
+      grid.get(k)!.push(i);
+    }
+
+    // collisions
+    const neighbors = [
+      [0, 0],
+      [1, 0],
+      [0, 1],
+      [1, 1],
+      [-1, 0],
+      [0, -1],
+      [-1, -1],
+      [1, -1],
+      [-1, 1],
+    ];
+
+    for (let i = 0; i < items.length; i++) {
+      const a = items[i];
+      const ax = Math.floor(a.x / cell);
+      const ay = Math.floor(a.y / cell);
+      const rA = a.size * 0.5 + 2;
+
+      for (const [dx, dy] of neighbors) {
+        const k = `${ax + dx}_${ay + dy}`;
+        const bucket = grid.get(k);
+        if (!bucket) continue;
+        for (const j of bucket) {
+          if (j <= i) continue;
+          const b = items[j];
+          const rB = b.size * 0.5 + 2;
+          const dxp = a.x - b.x;
+          const dyp = a.y - b.y;
+          const dist2 = dxp * dxp + dyp * dyp;
+          const minDist = rA + rB;
+          if (dist2 < minDist * minDist) {
+            const dist = Math.sqrt(dist2) || 0.001;
+            const nx = dxp / dist;
+            const ny = dyp / dist;
+            const overlap = minDist - dist;
+            // push apart
+            a.x += nx * (overlap * 0.5);
+            a.y += ny * (overlap * 0.5);
+            b.x -= nx * (overlap * 0.5);
+            b.y -= ny * (overlap * 0.5);
+            // simple bounce by swapping small part of vertical velocity
+            const vSwap = (a.vy - b.vy) * 0.25;
+            a.vy -= vSwap;
+            b.vy += vSwap;
+          }
+        }
+      }
+    }
+  };
+
+  const items = itemsRef.current;
+  const width = typeof window !== "undefined" ? window.innerWidth : 1200;
+  const height = typeof window !== "undefined" ? window.innerHeight : 800;
+
+  const IconOf: Record<SuitType, any> = { heart: Heart, diamond: Diamond, club: Club, spade: Spade };
+
+  // render
   return (
-    <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden" aria-hidden>
-      {specs.map((s) => {
-        const Icon =
-          s.suit === "heart"
-            ? Heart
-            : s.suit === "diamond"
-              ? Diamond
-              : s.suit === "club"
-                ? Club
-                : Spade;
+    <div className="pointer-events-none absolute inset-0 z-10" aria-hidden>
+      {items.map((s) => {
+        const Icon = IconOf[s.suit];
         return (
           <div
             key={s.id}
-            className="absolute top-0 animate-sway will-change-transform"
+            className="absolute will-change-transform"
             style={{
-              left: `${s.left}%`,
-              animationDuration: `${s.swayDuration * speed}s`,
-              animationDelay: `${s.delay}s`,
+              transform: `translate(${s.x}px, ${s.y}px)`,
+              width: s.size,
+              height: s.size,
             }}
           >
-            <div
-              className="animate-fall will-change-transform"
-              style={{
-                animationDuration: `${s.duration * speed}s`,
-                animationDelay: `${s.delay}s`,
-                animationTimingFunction: s.easing,
-              }}
-            >
-              <Icon
-                style={{ width: s.size, height: s.size, opacity: s.opacity }}
-                className="stroke-white/70 text-transparent"
-                strokeWidth={1.25}
-              />
-            </div>
+            <Icon
+              className="text-transparent stroke-white/90"
+              strokeWidth={1.5}
+              style={{ width: s.size, height: s.size, opacity: s.opacity }}
+            />
           </div>
         );
       })}
