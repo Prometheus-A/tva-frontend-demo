@@ -16,7 +16,7 @@ export default function Index() {
       <div className="relative z-20 flex min-h-screen items-center justify-center">
         <Button
           variant="ghost"
-          className="animate-btn-in will-change-transform rounded-full border border-transparent bg-white px-8 py-3 text-base font-semibold tracking-wide text-black transition-colors transition-shadow transition-transform duration-[1600ms] ease-in-out hover:scale-[1.02] active:scale-[0.98] focus-visible:ring-white/60 hover:bg-black hover:text-white hover:border-white hover:shadow-[0_0_0_1px_#fff,0_0_24px_rgba(255,255,255,0.35)]"
+          className="animate-btn-in will-change-transform rounded-full border border-transparent bg-white px-8 py-3 text-base font-semibold tracking-wide text-black opacity-90 transition-all duration-[1600ms] ease-in-out hover:opacity-100 hover:scale-[1.02] active:scale-[0.98] focus-visible:ring-white/60 hover:bg-black hover:text-white hover:border-white hover:shadow-[0_0_0_1px_#fff,0_0_24px_rgba(255,255,255,0.35)]"
           size="lg"
           style={{ animationDelay: "120ms" }}
         >
