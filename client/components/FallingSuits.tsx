@@ -29,19 +29,19 @@ export default function FallingSuits() {
 
   const specs = useMemo(() => {
     const width = typeof window !== "undefined" ? window.innerWidth : 1200;
-    const density = width < 640 ? 0.05 : width < 1024 ? 0.07 : 0.09; // elements per px
-    const count = Math.max(32, Math.min(140, Math.floor(width * density)));
+    const density = width < 640 ? 0.12 : width < 1024 ? 0.15 : 0.18; // proportional to width
+    const count = Math.max(48, Math.min(220, Math.floor(width * density)));
 
     return Array.from({ length: count }).map((_, i) => {
-      const size = Math.round(random(8, 16));
+      const size = Math.round(random(6, 14));
       return {
         id: i,
         left: Math.round(random(0, 100)),
         size,
-        duration: random(10, 22),
-        delay: -random(0, 22),
-        swayDuration: random(4, 10),
-        opacity: random(0.25, 0.6),
+        duration: random(14, 30),
+        delay: -random(0, 30),
+        swayDuration: random(5, 12),
+        opacity: random(0.28, 0.55),
         suit: SUITS[Math.floor(random(0, SUITS.length))],
       } as SuitSpec;
     });
@@ -50,7 +50,7 @@ export default function FallingSuits() {
   if (!mounted) return null; // avoid SSR hydration mismatch
 
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+    <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden" aria-hidden>
       {specs.map((s) => {
         const Icon =
           s.suit === "heart"
@@ -79,7 +79,8 @@ export default function FallingSuits() {
             >
               <Icon
                 style={{ width: s.size, height: s.size, opacity: s.opacity }}
-                className="stroke-white/60 text-white/60"
+                className="stroke-white/70 text-transparent"
+                strokeWidth={1.25}
               />
             </div>
           </div>
