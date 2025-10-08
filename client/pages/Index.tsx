@@ -47,7 +47,7 @@ export default function Index() {
                 <button className="flex items-center gap-3 w-full rounded-md border border-white/15 bg-white/5 px-4 py-3 text-left font-medium hover:bg-white/10 transition-colors"><Wallet className="h-5 w-5" /> Ready X wallet</button>
                 <button className="flex items-center gap-3 w-full rounded-md border border-white/15 bg-white/5 px-4 py-3 text-left font-medium hover:bg-white/10 transition-colors"><Shield className="h-5 w-5" /> Braavos</button>
                 <button className="flex items-center gap-3 w-full rounded-md border border-white/15 bg-white/5 px-4 py-3 text-left font-medium hover:bg-white/10 transition-colors"><Gamepad2 className="h-5 w-5" /> Cartridge</button>
-                <button className="flex items-center gap-3 w-full rounded-md border border-white/15 bg-white/5 px-4 py-3 text-left font-medium hover:bg-white/10 transition-colors"><Compass className="h-5 w-5" /> Explore without wallet</button>
+                <button className="flex items-center gap-3 w-full rounded-md border border-white/15 bg-white/5 px-4 py-3 text-left font-medium hover:bg-white/10 transition-colors"><Compass className="h-5 w-5" /> Wandering</button>
               </div>
             </DialogContent>
           </Dialog>
