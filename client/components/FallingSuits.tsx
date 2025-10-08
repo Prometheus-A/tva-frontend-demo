@@ -21,7 +21,7 @@ function random(min: number, max: number) {
   return Math.random() * (max - min) + min;
 }
 
-export default function FallingSuits() {
+export default function FallingSuits({ speed = 1 }: { speed?: number }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -87,14 +87,14 @@ export default function FallingSuits() {
             className="absolute top-0 animate-sway will-change-transform"
             style={{
               left: `${s.left}%`,
-              animationDuration: `${s.swayDuration}s`,
+              animationDuration: `${s.swayDuration * speed}s`,
               animationDelay: `${s.delay}s`,
             }}
           >
             <div
               className="animate-fall will-change-transform"
               style={{
-                animationDuration: `${s.duration}s`,
+                animationDuration: `${s.duration * speed}s`,
                 animationDelay: `${s.delay}s`,
                 animationTimingFunction: s.easing,
               }}
