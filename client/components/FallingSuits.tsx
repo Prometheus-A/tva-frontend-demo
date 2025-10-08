@@ -29,19 +29,30 @@ export default function FallingSuits() {
 
   const specs = useMemo(() => {
     const width = typeof window !== "undefined" ? window.innerWidth : 1200;
-    const density = width < 640 ? 0.12 : width < 1024 ? 0.15 : 0.18; // proportional to width
-    const count = Math.max(48, Math.min(220, Math.floor(width * density)));
+    const density = width < 640 ? 0.16 : width < 1024 ? 0.2 : 0.24; // proportional to width
+    const count = Math.max(64, Math.min(260, Math.floor(width * density)));
+
+    const clusters = Math.floor(random(3, 7));
+    const centers = Array.from({ length: clusters }).map(() => random(5, 95)); // left% centers
+
+    const pickLeft = () => {
+      if (Math.random() < 0.7) {
+        const c = centers[Math.floor(random(0, centers.length))];
+        return Math.max(0, Math.min(100, c + random(-7, 7)));
+      }
+      return Math.max(0, Math.min(100, random(0, 100)));
+    };
 
     return Array.from({ length: count }).map((_, i) => {
       const size = Math.round(random(6, 14));
       return {
         id: i,
-        left: Math.round(random(0, 100)),
+        left: Math.round(pickLeft()),
         size,
-        duration: random(14, 30),
-        delay: -random(0, 30),
-        swayDuration: random(5, 12),
-        opacity: random(0.28, 0.55),
+        duration: random(12, 28),
+        delay: -random(0, 36),
+        swayDuration: random(4.5, 10.5),
+        opacity: random(0.25, 0.55),
         suit: SUITS[Math.floor(random(0, SUITS.length))],
       } as SuitSpec;
     });
