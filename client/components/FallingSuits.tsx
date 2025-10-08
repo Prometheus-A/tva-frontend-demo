@@ -47,11 +47,11 @@ export default function FallingSuits({ speed = 1 }: { speed?: number }) {
     window.addEventListener("resize", updateDims);
 
     const { w } = dimsRef.current;
-    const density = w < 640 ? 0.14 : w < 1024 ? 0.18 : 0.22;
-    const count = Math.max(64, Math.min(240, Math.floor(w * density)));
+    const density = w < 640 ? 0.28 : w < 1024 ? 0.36 : 0.44; // doubled density
+    const count = Math.max(128, Math.min(480, Math.floor(w * density)));
 
     const init: Suit[] = Array.from({ length: count }).map((_, i) => {
-      const size = Math.round(rand(7, 14));
+      const size = Math.round(rand(6, 22));
       const baseX = rand(0, dimsRef.current.w);
       return {
         id: i,
@@ -60,10 +60,10 @@ export default function FallingSuits({ speed = 1 }: { speed?: number }) {
         baseX,
         size,
         vy: rand(35, 120),
-        swayAmp: rand(6, 22),
-        swayFreq: rand(0.15, 0.45),
+        swayAmp: rand(6, 26),
+        swayFreq: rand(0.12, 0.5),
         swayPhase: rand(0, Math.PI * 2),
-        opacity: rand(0.45, 0.85),
+        opacity: rand(0.65, 1),
         suit: SUITS[Math.floor(rand(0, SUITS.length))],
       };
     });
@@ -95,7 +95,7 @@ export default function FallingSuits({ speed = 1 }: { speed?: number }) {
     const { w, h } = dimsRef.current;
 
     // spatial hash for collisions
-    const cell = 28;
+    const cell = 32;
     const grid = new Map<string, number[]>();
     const keyOf = (x: number, y: number) => `${Math.floor(x / cell)}_${Math.floor(y / cell)}`;
 
@@ -113,8 +113,8 @@ export default function FallingSuits({ speed = 1 }: { speed?: number }) {
         it.y = -rand(0, h * 0.6);
         it.baseX = rand(0, w);
         it.vy = rand(35, 120);
-        it.swayAmp = rand(6, 22);
-        it.swayFreq = rand(0.15, 0.45);
+        it.swayAmp = rand(6, 26);
+        it.swayFreq = rand(0.12, 0.5);
         it.swayPhase = rand(0, Math.PI * 2);
       }
 
@@ -140,7 +140,7 @@ export default function FallingSuits({ speed = 1 }: { speed?: number }) {
       const a = items[i];
       const ax = Math.floor(a.x / cell);
       const ay = Math.floor(a.y / cell);
-      const rA = a.size * 0.5 + 2;
+      const rA = a.size * 0.48;
 
       for (const [dx, dy] of neighbors) {
         const k = `${ax + dx}_${ay + dy}`;
@@ -149,7 +149,7 @@ export default function FallingSuits({ speed = 1 }: { speed?: number }) {
         for (const j of bucket) {
           if (j <= i) continue;
           const b = items[j];
-          const rB = b.size * 0.5 + 2;
+          const rB = b.size * 0.48;
           const dxp = a.x - b.x;
           const dyp = a.y - b.y;
           const dist2 = dxp * dxp + dyp * dyp;
@@ -159,13 +159,14 @@ export default function FallingSuits({ speed = 1 }: { speed?: number }) {
             const nx = dxp / dist;
             const ny = dyp / dist;
             const overlap = minDist - dist;
-            // push apart
-            a.x += nx * (overlap * 0.5);
-            a.y += ny * (overlap * 0.5);
-            b.x -= nx * (overlap * 0.5);
-            b.y -= ny * (overlap * 0.5);
-            // simple bounce by swapping small part of vertical velocity
-            const vSwap = (a.vy - b.vy) * 0.25;
+            // push apart to exactly touch
+            const push = overlap * 0.5;
+            a.x += nx * push;
+            a.y += ny * push;
+            b.x -= nx * push;
+            b.y -= ny * push;
+            // simple bounce by exchanging small vertical component
+            const vSwap = (a.vy - b.vy) * 0.3;
             a.vy -= vSwap;
             b.vy += vSwap;
           }
@@ -196,8 +197,8 @@ export default function FallingSuits({ speed = 1 }: { speed?: number }) {
             }}
           >
             <Icon
-              className="text-transparent stroke-white/90"
-              strokeWidth={1.5}
+              className="text-transparent stroke-white"
+              strokeWidth={1.6}
               style={{ width: s.size, height: s.size, opacity: s.opacity }}
             />
           </div>
