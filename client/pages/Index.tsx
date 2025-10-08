@@ -15,7 +15,8 @@ export default function Index() {
       {/* Centered Call-to-Action */}
       <div className="relative z-20 flex min-h-screen items-center justify-center">
         <Button
-          className="group rounded-full bg-white px-8 py-3 text-base font-semibold tracking-wide text-black shadow-[0_0_0_2px_rgba(255,255,255,0.2)_inset,0_10px_30px_rgba(255,255,255,0.08)] transition-transform duration-150 hover:scale-[1.02] active:scale-[0.98] focus-visible:ring-white/60"
+          variant="ghost"
+          className="group rounded-full border-2 border-white/0 bg-white px-8 py-3 text-base font-semibold tracking-wide text-black transition-colors transition-shadow transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] focus-visible:ring-white/60 hover:bg-black hover:text-white hover:border-white hover:shadow-[0_0_0_2px_rgba(255,255,255,1),0_0_24px_rgba(255,255,255,0.35)]"
           size="lg"
         >
           <span className="relative">
