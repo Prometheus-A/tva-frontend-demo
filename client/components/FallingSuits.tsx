@@ -12,6 +12,7 @@ interface SuitSpec {
   swayDuration: number; // seconds
   opacity: number; // 0..1
   suit: SuitType;
+  easing: string; // CSS timing function
 }
 
 const SUITS: SuitType[] = ["heart", "diamond", "club", "spade"];
@@ -43,17 +44,26 @@ export default function FallingSuits() {
       return Math.max(0, Math.min(100, random(0, 100)));
     };
 
+    const easings = [
+      "linear",
+      "cubic-bezier(.2,.8,.2,1)", // standard ease-out
+      "cubic-bezier(.3,.7,.4,1)",
+      "cubic-bezier(.1,.9,.2,1)",
+      "cubic-bezier(.4,0,.2,1)", // standard ease
+    ];
+
     return Array.from({ length: count }).map((_, i) => {
       const size = Math.round(random(6, 14));
       return {
         id: i,
         left: Math.round(pickLeft()),
         size,
-        duration: random(12, 28),
-        delay: -random(0, 36),
-        swayDuration: random(4.5, 10.5),
+        duration: random(6, 36),
+        delay: -random(0, 42),
+        swayDuration: random(4.5, 12.5),
         opacity: random(0.25, 0.55),
         suit: SUITS[Math.floor(random(0, SUITS.length))],
+        easing: easings[Math.floor(random(0, easings.length))],
       } as SuitSpec;
     });
   }, [mounted]);
@@ -86,6 +96,7 @@ export default function FallingSuits() {
               style={{
                 animationDuration: `${s.duration}s`,
                 animationDelay: `${s.delay}s`,
+                animationTimingFunction: s.easing,
               }}
             >
               <Icon
